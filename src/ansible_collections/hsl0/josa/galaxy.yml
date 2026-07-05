@@ -1,0 +1,20 @@
+namespace: hsl0
+name: josa
+version: 0.1.0
+readme: README.md
+authors:
+  - hsl0
+description: Placeholder Ansible filters for Korean josa replacement.
+license:
+  - MIT
+tags:
+  - jinja2
+  - korean
+  - josa
+  - filter
+dependencies: {}
+repository: https://github.com/hsl0/jinja2-josa-filter
+issues: https://github.com/hsl0/jinja2-josa-filter/issues
+build_ignore:
+  - tests
+  - tests/**

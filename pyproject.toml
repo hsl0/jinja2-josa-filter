@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jinja2-josa-filter"
+version = "0.1.0"
+description = "Korean josa filters for Jinja2-compatible template environments."
+readme = "src/jinja2_josa_filter/README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [
+  { name = "hsl0" },
+]
+keywords = ["jinja2", "korean", "josa", "ansible", "filter"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+  "tjosa"
+]
+
+[project.optional-dependencies]
+dev = [
+  "ansible-core",
+  "build",
+  "pytest",
+  "vendorize",
+]
+
+[project.urls]
+Homepage = "https://github.com/hsl0/jinja2-josa-filter"
+Issues = "https://github.com/hsl0/jinja2-josa-filter/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/jinja2_josa_filter"]
+
+[tool.vendorize]
+target = "src/ansible_collections/hsl0/josa/plugins/module_utils/vendor"
+packages = [
+  ".",
+  "tjosa",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
