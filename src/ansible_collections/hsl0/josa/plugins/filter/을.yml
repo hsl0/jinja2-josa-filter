@@ -1,0 +1,21 @@
+DOCUMENTATION:
+  name: 을
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add the appropriate 을 or 를 particle
+  description:
+    - Appends the appropriate 을 or 를 particle to a Korean noun.
+  positional: _input
+  options:
+    _input:
+      description: The noun to which the particle is appended.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add an 을 or 를 particle
+    ansible.builtin.debug:
+      msg: "{{ '물' | hsl0.josa.을 }}"
+RETURN:
+  _value:
+    description: The input noun with an 을 or 를 particle appended.
+    type: str

@@ -1,0 +1,21 @@
+---
+- name: hsl0.josa filters are available by FQCN
+  ansible.builtin.assert:
+    that:
+      - ('사과' | hsl0.josa.는) == '사과는'
+      - ('파인애플' | hsl0.josa.는) == '파인애플은'
+      - ('집' | hsl0.josa.은) == '집은'
+      - ('학교' | hsl0.josa.은) == '학교는'
+      - ('고양이' | hsl0.josa.가) == '고양이가'
+      - ('표범' | hsl0.josa.가) == '표범이'
+      - ('물' | hsl0.josa.를) == '물을'
+      - ('콜라' | hsl0.josa.를) == '콜라를'
+      - ('책' | hsl0.josa.과) == '책과'
+      - ('컴퓨터' | hsl0.josa.과) == '컴퓨터와'
+      - ('제주' | hsl0.josa.로) == '제주로'
+      - ('서울' | hsl0.josa.로) == '서울로'
+      - ('철수' | hsl0.josa.야) == '철수야'
+      - ('지민' | hsl0.josa.야) == '지민아'
+      - ('철수' | hsl0.josa.이는) == '철수는'
+      - ('지민' | hsl0.josa.이는) == '지민이는'
+      - ('집' | hsl0.josa.josa('가')) == '집이'

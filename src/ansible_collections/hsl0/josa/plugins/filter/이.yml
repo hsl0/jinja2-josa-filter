@@ -1,0 +1,21 @@
+DOCUMENTATION:
+  name: 이
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add 이 only after a consonant-final noun
+  description:
+    - Appends 이 to a Korean noun with a final consonant and returns a vowel-final noun unchanged.
+  positional: _input
+  options:
+    _input:
+      description: The noun to which 이 is conditionally appended.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add 이 only when needed
+    ansible.builtin.debug:
+      msg: "{{ '지민' | hsl0.josa.이 }}"
+RETURN:
+  _value:
+    description: The input noun with 이 appended when it has a final consonant.
+    type: str

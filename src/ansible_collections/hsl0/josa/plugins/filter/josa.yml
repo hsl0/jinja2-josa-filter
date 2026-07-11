@@ -1,0 +1,32 @@
+DOCUMENTATION:
+  name: josa
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add a Korean particle selected from a candidate
+  description:
+    - Appends the Korean particle appropriate for the supplied noun and particle candidate.
+  positional: _input, josa
+  options:
+    _input:
+      description: The noun to which the particle is appended.
+      type: str
+      required: true
+    josa:
+      description:
+        - A Korean particle that starts with one of the supported candidates.
+        - Supported candidates are C(은), C(는), C(이), C(가), C(을), C(를), C(과), C(와), C(으로), C(로), C(아), and C(야).
+        - A suffix can follow a supported candidate; for example, C(이는), C(이랑), C(이며), and C(이다) select the C(이) rule and retain the suffix.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add a subject marker selected from a candidate
+    ansible.builtin.debug:
+      msg: "{{ '집' | hsl0.josa.josa('가') }}"
+
+  - name: Add an extended particle selected from its leading candidate
+    ansible.builtin.debug:
+      msg: "{{ '지민' | hsl0.josa.josa('이랑') }}"
+RETURN:
+  _value:
+    description: The input noun with the selected Korean particle appended.
+    type: str

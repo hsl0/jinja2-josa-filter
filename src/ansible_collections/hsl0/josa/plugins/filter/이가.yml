@@ -1,0 +1,21 @@
+DOCUMENTATION:
+  name: 이가
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add the appropriate 이 or 가 particle
+  description:
+    - Appends the appropriate 이 or 가 particle to a Korean noun.
+  positional: _input
+  options:
+    _input:
+      description: The noun to which the particle is appended.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add an 이 or 가 particle
+    ansible.builtin.debug:
+      msg: "{{ '고양이' | hsl0.josa.이가 }}"
+RETURN:
+  _value:
+    description: The input noun with an 이 or 가 particle appended.
+    type: str

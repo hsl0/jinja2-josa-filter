@@ -1,6 +1,10 @@
 # build output
 *.tar.gz
 
+# ansible-test output
+src/ansible_collections/*/*/tests/integration/inventory
+src/ansible_collections/*/*/tests/output/
+
 # vendor
 src/ansible_collections/hsl0/josa/plugins/module_utils/vendor
 
@@ -207,7 +211,7 @@ cython_debug/
 #   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #   and can be added to the global gitignore or merged into this file. However, if you prefer, 
 #   you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+.vscode/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 

@@ -1,10 +1,13 @@
 namespace: hsl0
 name: josa
-version: 0.1.0
+# Placeholder only. The real version is injected from the
+# "ansible-collection/vX.Y.Z" git tag at release build time
+# (see .github/workflows/release-collection.yml).
+version: 0.0.0
 readme: README.md
 authors:
   - hsl0
-description: Placeholder Ansible filters for Korean josa replacement.
+description: Korean josa filters for Jinja2 templates in Ansible.
 license:
   - MIT
 tags:
@@ -14,6 +17,8 @@ tags:
   - filter
 dependencies: {}
 repository: https://github.com/hsl0/jinja2-josa-filter
+documentation: https://github.com/hsl0/jinja2-josa-filter/tree/main/src/ansible_collections/hsl0/josa
+homepage: https://github.com/hsl0/jinja2-josa-filter
 issues: https://github.com/hsl0/jinja2-josa-filter/issues
 build_ignore:
   - tests

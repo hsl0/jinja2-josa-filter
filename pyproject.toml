@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "jinja2-josa-filter"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Korean josa filters for Jinja2-compatible template environments."
 readme = "src/jinja2_josa_filter/README.md"
 requires-python = ">=3.12"
@@ -31,6 +31,9 @@ dependencies = [
 dev = [
   "ansible-core",
   "build",
+  "flake8",
+  "molecule",
+  "pylint",
   "pytest",
   "vendorize",
 ]
@@ -41,13 +44,20 @@ Issues = "https://github.com/hsl0/jinja2-josa-filter/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/jinja2_josa_filter"]
+exclude = ["src/jinja2_josa_filter/README.md"]
 
-[tool.vendorize]
-target = "src/ansible_collections/hsl0/josa/plugins/module_utils/vendor"
-packages = [
-  ".",
-  "tjosa",
-]
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
+
+[tool.hatch.version.raw-options]
+# Only consider tags like "pypi/v1.2.3"; the collection is released
+# independently under "ansible-collection/v*" tags.
+git_describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--match", "pypi/v*"]
+tag_regex = "^pypi/v(?P<version>.*)$"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+testpaths = ["src/jinja2_josa_filter"]
+python_files = ["*.py"]
+addopts = "--doctest-modules"

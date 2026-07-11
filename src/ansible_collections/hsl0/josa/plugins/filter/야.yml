@@ -1,0 +1,21 @@
+DOCUMENTATION:
+  name: 야
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add the appropriate 아 or 야 particle
+  description:
+    - Appends the appropriate 아 or 야 particle to a Korean noun.
+  positional: _input
+  options:
+    _input:
+      description: The noun to which the particle is appended.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add an 아 or 야 particle
+    ansible.builtin.debug:
+      msg: "{{ '철수' | hsl0.josa.야 }}"
+RETURN:
+  _value:
+    description: The input noun with an 아 or 야 particle appended.
+    type: str

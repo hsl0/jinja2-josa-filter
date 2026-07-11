@@ -1,0 +1,58 @@
+name: Test Ansible collection
+
+on:
+  push:
+    paths:
+      - "src/ansible_collections/hsl0/josa/**"
+      - "src/jinja2_josa_filter/**"
+      - "pyproject.toml"
+      - ".github/workflows/ansible-test.yml"
+  pull_request:
+    paths:
+      - "src/ansible_collections/hsl0/josa/**"
+      - "src/jinja2_josa_filter/**"
+      - "pyproject.toml"
+      - ".github/workflows/ansible-test.yml"
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+      - name: Vendor collection dependencies
+        run: python-vendorize
+      - name: Run collection sanity tests
+        working-directory: src/ansible_collections/hsl0/josa
+        run: ansible-test sanity --docker default --color yes
+
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install '.[dev]'
+      - name: Vendor collection dependencies
+        run: python-vendorize
+      - name: Run collection integration tests
+        working-directory: src/ansible_collections/hsl0/josa
+        run: ansible-test integration --docker default --color yes

@@ -1,0 +1,21 @@
+DOCUMENTATION:
+  name: 다
+  author: hsl0
+  version_added: "0.1.0"
+  short_description: Add the appropriate 이다 or 다 ending
+  description:
+    - Appends the appropriate 이다 or 다 ending to a Korean noun.
+  positional: _input
+  options:
+    _input:
+      description: The noun to which the ending is appended.
+      type: str
+      required: true
+EXAMPLES: |
+  - name: Add an 이다 or 다 ending
+    ansible.builtin.debug:
+      msg: "{{ '철수' | hsl0.josa.다 }}"
+RETURN:
+  _value:
+    description: The input noun with an 이다 or 다 ending appended.
+    type: str

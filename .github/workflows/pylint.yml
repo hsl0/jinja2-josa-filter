@@ -1,0 +1,39 @@
+name: Pylint
+
+on:
+  push:
+    paths:
+      - "src/**.py"
+      - test/*.py
+      - .github/workflows/pylint.yml
+  pull_request:
+    paths:
+      - "src/**.py"
+      - test/*.py
+      - .github/workflows/pylint.yml
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.14"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install '.[dev]'
+          pip install -e .
+      - name: Analysing the code with pylint
+        run: |
+          pylint src/jinja2_josa_filter
