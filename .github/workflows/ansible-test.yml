@@ -36,7 +36,7 @@ jobs:
         run: python-vendorize
       - name: Run collection sanity tests
         working-directory: src/ansible_collections/hsl0/josa
-        run: ansible-test sanity --docker default --color yes
+        run: ansible-test sanity --color yes
 
   integration:
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
         run: python-vendorize
       - name: Run collection integration tests
         working-directory: src/ansible_collections/hsl0/josa
-        run: ansible-test integration --docker default --color yes
+        run: ansible-test integration --color yes
