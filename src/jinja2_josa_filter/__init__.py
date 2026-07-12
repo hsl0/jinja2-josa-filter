@@ -6,7 +6,7 @@ from tjosa import josa_only as _josa_only
 from tjosa.mappings.josa import BuiltinJosa as _BuiltinJosa
 
 
-def josa(cheon: str, josa: _BuiltinJosa) -> str:
+def josa(cheon: str, josa: _BuiltinJosa) -> str:  # pylint: disable=redefined-outer-name
     """체언과 조사를 입력해서 체언에 맞는 조사를 반환합니다.
 
     Args:
