@@ -90,4 +90,4 @@ jobs:
 
       - name: Publish collection to Ansible Galaxy
         run: |
-          ansible-galaxy collection publish dist/*.tar.gz --token "${{ secrets.GALAXY_API_KEY }}"
+          ansible-galaxy collection publish dist/*.tar.gz --token "${{ secrets.GALAXY_TOKEN }}"
