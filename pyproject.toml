@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling >=1.31.0, <2.0.0", "hatch-vcs >=0.5.0, <0.6.0"]
 build-backend = "hatchling.build"
 
 [project]
@@ -24,18 +24,18 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-  "tjosa"
+  "tjosa >=0.3.0, <0.4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "ansible-core",
-  "build",
-  "flake8",
-  "molecule",
-  "pylint",
-  "pytest",
-  "vendorize",
+  "ansible-core >=2.21.1, <3.0.0",
+  "build >=1.5.1, <2.0.0",
+  "flake8 >=7.3.0, <8.0.0",
+  "molecule >=26.6.0, <27.0.0",
+  "pylint >=4.0.6, <5.0.0",
+  "pytest >=9.1.1, <10.0.0",
+  "vendorize >=0.3.0, <0.4.0",
 ]
 
 [project.urls]
@@ -48,7 +48,7 @@ exclude = ["src/jinja2_josa_filter/README.md"]
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "0.0.0"
+fallback-version = "0.0.0+wip"
 
 [tool.hatch.version.raw-options]
 # Only consider tags like "pypi/v1.2.3"; the collection is released

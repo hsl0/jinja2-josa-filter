@@ -1,1 +1,0 @@
-# Placeholder sanity ignore file for future ansible-test configuration.

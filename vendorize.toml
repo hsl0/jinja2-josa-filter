@@ -1,5 +1,5 @@
 target = "src/ansible_collections/hsl0/josa/plugins/module_utils/vendor"
 packages = [
   ".",
-  "tjosa",
+  "tjosa >=0.3.0, <0.4.0",
 ]

@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+"""Jinja2 호환 템플릿 환경에서 사용할 수 있는 한국어 조사 필터 모음입니다."""
+
 from tjosa import josa_only as _josa_only
 from tjosa.mappings.josa import BuiltinJosa as _BuiltinJosa
 
