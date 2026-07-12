@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 는
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 은 or 는 particle
+  short_description: 적절한 은 또는 는 조사를 붙입니다
   description:
-    - Appends the appropriate 은 or 는 particle to a Korean noun.
+    - 한국어 명사에 적절한 은 또는 는 조사를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the particle is appended.
+      description: 조사를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add an 은 or 는 particle
+  - name: 은 또는 는 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '사과' | hsl0.josa.는 }}"
 RETURN:
   _value:
-    description: The input noun with an 은 or 는 particle appended.
+    description: 은 또는 는 조사가 붙은 입력 명사.
     type: str

@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 이다
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 이다 or 다 ending
+  short_description: 적절한 이다 또는 다 어미를 붙입니다
   description:
-    - Appends the appropriate 이다 or 다 ending to a Korean noun.
+    - 한국어 명사에 적절한 이다 또는 다 어미를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the ending is appended.
+      description: 어미를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add an 이다 or 다 ending
+  - name: 이다 또는 다 어미 붙이기
     ansible.builtin.debug:
       msg: "{{ '지민' | hsl0.josa.이다 }}"
 RETURN:
   _value:
-    description: The input noun with an 이다 or 다 ending appended.
+    description: 이다 또는 다 어미가 붙은 입력 명사.
     type: str

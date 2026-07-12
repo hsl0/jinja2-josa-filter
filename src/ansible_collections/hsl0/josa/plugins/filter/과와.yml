@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 과와
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 과 or 와 particle
+  short_description: 적절한 과 또는 와 조사를 붙입니다
   description:
-    - Appends the appropriate 과 or 와 particle to a Korean noun.
+    - 한국어 명사에 적절한 과 또는 와 조사를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the particle is appended.
+      description: 조사를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add a 과 or 와 particle
+  - name: 과 또는 와 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '책' | hsl0.josa.과와 }}"
 RETURN:
   _value:
-    description: The input noun with a 과 or 와 particle appended.
+    description: 과 또는 와 조사가 붙은 입력 명사.
     type: str

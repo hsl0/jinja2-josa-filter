@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 을
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 을 or 를 particle
+  short_description: 적절한 을 또는 를 조사를 붙입니다
   description:
-    - Appends the appropriate 을 or 를 particle to a Korean noun.
+    - 한국어 명사에 적절한 을 또는 를 조사를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the particle is appended.
+      description: 조사를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add an 을 or 를 particle
+  - name: 을 또는 를 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '물' | hsl0.josa.을 }}"
 RETURN:
   _value:
-    description: The input noun with an 을 or 를 particle appended.
+    description: 을 또는 를 조사가 붙은 입력 명사.
     type: str

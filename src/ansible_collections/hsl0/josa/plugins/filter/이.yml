@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 이
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add 이 only after a consonant-final noun
+  short_description: 받침 있는 명사 뒤에만 이를 붙입니다
   description:
-    - Appends 이 to a Korean noun with a final consonant and returns a vowel-final noun unchanged.
+    - 받침이 있는 한국어 명사에는 이를 붙이고, 받침이 없는 명사는 그대로 반환합니다.
   positional: _input
   options:
     _input:
-      description: The noun to which 이 is conditionally appended.
+      description: 이를 조건부로 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add 이 only when needed
+  - name: 필요할 때만 이 붙이기
     ansible.builtin.debug:
       msg: "{{ '지민' | hsl0.josa.이 }}"
 RETURN:
   _value:
-    description: The input noun with 이 appended when it has a final consonant.
+    description: 받침이 있을 때 이가 붙은 입력 명사.
     type: str

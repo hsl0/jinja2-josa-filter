@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 로
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 으로 or 로 particle
+  short_description: 적절한 으로 또는 로 조사를 붙입니다
   description:
-    - Appends the appropriate 으로 or 로 particle to a Korean noun.
+    - 한국어 명사에 적절한 으로 또는 로 조사를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the particle is appended.
+      description: 조사를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add an 으로 or 로 particle
+  - name: 으로 또는 로 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '집' | hsl0.josa.로 }}"
 RETURN:
   _value:
-    description: The input noun with an 으로 or 로 particle appended.
+    description: 으로 또는 로 조사가 붙은 입력 명사.
     type: str

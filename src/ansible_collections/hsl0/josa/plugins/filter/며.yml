@@ -2,20 +2,20 @@ DOCUMENTATION:
   name: 며
   author: hsl0
   version_added: "0.1.0"
-  short_description: Add the appropriate 이며 or 며 particle
+  short_description: 적절한 이며 또는 며 조사를 붙입니다
   description:
-    - Appends the appropriate 이며 or 며 particle to a Korean noun.
+    - 한국어 명사에 적절한 이며 또는 며 조사를 붙입니다.
   positional: _input
   options:
     _input:
-      description: The noun to which the particle is appended.
+      description: 조사를 붙일 명사.
       type: str
       required: true
 EXAMPLES: |
-  - name: Add an 이며 or 며 particle
+  - name: 이며 또는 며 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '철수' | hsl0.josa.며 }}"
 RETURN:
   _value:
-    description: The input noun with an 이며 or 며 particle appended.
+    description: 이며 또는 며 조사가 붙은 입력 명사.
     type: str
