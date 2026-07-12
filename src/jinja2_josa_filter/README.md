@@ -1,6 +1,6 @@
 # jinja2-josa-filter
 
-Jinja2 호환 템플릿 환경에서 사용할 수 있는 한국어 조사 필터 패키지입니다. [tjosa](https://github.com/hsl0/tjosa) 라이브러리를 바탕으로 만들었습니다.
+Jinja2 호환 템플릿 환경에서 사용할 수 있는 한국어 조사 필터 패키지입니다. [tjosa](https://github.com/hsl0/tjosa-py) 라이브러리를 바탕으로 만들었습니다.
 
 ## 참고
 

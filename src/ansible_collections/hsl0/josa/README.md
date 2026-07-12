@@ -1,6 +1,6 @@
 # hsl0.josa
 
-Jinja2 용 한국어 조사 필터를 제공하는 Ansible 컬렉션입니다. [tjosa](https://github.com/hsl0/tjosa) 라이브러리를 바탕으로 만들어진 jinja2-josa-filter 패키지를 Ansible에 맞게 다듬었습니다.
+Jinja2 용 한국어 조사 필터를 제공하는 Ansible 컬렉션입니다. [tjosa](https://github.com/hsl0/tjosa-py) 라이브러리를 바탕으로 만들어진 [jinja2-josa-filter](https://github.com/hsl0/jinja2-josa-filter/tree/main/src/jinja2_josa_filter) 패키지를 Ansible에 맞게 다듬었습니다.
 
 ## 사용
 
