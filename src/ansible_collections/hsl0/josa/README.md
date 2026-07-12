@@ -2,6 +2,10 @@
 
 Jinja2 용 한국어 조사 필터를 제공하는 Ansible 컬렉션입니다. [tjosa](https://github.com/hsl0/tjosa-py) 라이브러리를 바탕으로 만들어진 [jinja2-josa-filter](https://github.com/hsl0/jinja2-josa-filter/tree/main/src/jinja2_josa_filter) 패키지를 Ansible에 맞게 다듬었습니다.
 
+## 요구 사항
+
+필터 플러그인이 실행되는 Ansible 컨트롤러 노드가 **Python 3.12 이상** 버전에서 실행되어야 합니다.
+
 ## 사용
 
 Ansible에서 컬렉션 필터는 기본적으로 FQCN(Fully Qualified Collection Name)으로 참조합니다.
