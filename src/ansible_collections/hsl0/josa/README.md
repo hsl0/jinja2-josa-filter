@@ -6,6 +6,29 @@ Jinja2 용 한국어 조사 필터를 제공하는 Ansible 컬렉션입니다. [
 
 필터 플러그인이 실행되는 Ansible 컨트롤러 노드가 **Python 3.12 이상** 버전에서 실행되어야 합니다.
 
+## 설치
+
+이 컬렉션은 `는`, `은`, `가`, `를` 같은 한글 필터 이름을 그대로 노출합니다. 공개 Ansible
+Galaxy 인덱스는 필터 이름에 ASCII 영문·숫자·밑줄만 허용하기 때문에, 이 컬렉션은 Galaxy에
+게시하지 않고 **GitHub Release**로 직접 배포합니다.
+
+```sh
+# 최신 버전 — 릴리스마다 URL이 바뀌지 않습니다
+ansible-galaxy collection install --force \
+  https://github.com/hsl0/jinja2-josa-filter/releases/download/ansible-collection/latest/hsl0-josa.tar.gz
+
+# 마이너 버전 고정 (0.1.x 최신)
+ansible-galaxy collection install --force \
+  https://github.com/hsl0/jinja2-josa-filter/releases/download/ansible-collection/v0.1/hsl0-josa.tar.gz
+
+# 정확한 버전 고정
+ansible-galaxy collection install \
+  https://github.com/hsl0/jinja2-josa-filter/releases/download/ansible-collection/v0.1.0/hsl0-josa.tar.gz
+```
+
+`latest`나 `v0.1`처럼 채널 URL로 설치하거나 업그레이드할 때는 `--force`를 붙여야 합니다.
+URL 설치는 기본적으로 기존 설치본이 있으면 건너뛰기 때문입니다.
+
 ## 사용
 
 Ansible에서 컬렉션 필터는 기본적으로 FQCN(Fully Qualified Collection Name)으로 참조합니다.

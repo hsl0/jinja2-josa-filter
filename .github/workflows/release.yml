@@ -1,0 +1,91 @@
+# Releases both packages (PyPI package + Ansible collection) from a
+# single unprefixed "vX.Y.Z" tag.
+#
+# The two packages are still versioned independently under their own
+# prefixed tags ("pypi/vX.Y.Z" and "ansible-collection/vX.Y.Z" — see
+# release-pypi.yml / release-collection.yml), so this workflow's
+# `plan` job derives and pushes those prefixed tags on this tag's
+# commit, then calls the two release workflows directly as reusable
+# workflows.
+#
+# Direct calls (not a re-trigger) are required because pushes made
+# with the default GITHUB_TOKEN do not trigger other workflow runs:
+# https://docs.github.com/en/actions/concepts/security/github_token
+#
+# If a derived tag already exists (e.g. that package was already
+# released at this version), that package is skipped and this
+# workflow's `plan` job fails on purpose so the run shows up as
+# failed — the other package (if not a duplicate) still releases.
+name: Release both packages
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write # to push derived tags
+  id-token: write # so the reusable pypi workflow can use trusted publishing
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.plan.outputs.version }}
+      do_pypi: ${{ steps.plan.outputs.do_pypi }}
+      do_collection: ${{ steps.plan.outputs.do_collection }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Plan derived tags (skip duplicates)
+        id: plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          plan_tag () {
+            # $1 = derived tag to create, $2 = output key to report through
+            if git ls-remote --exit-code --tags origin "refs/tags/$1" >/dev/null 2>&1; then
+              echo "$1 already exists — skipping (duplicate)"
+              echo "$2=false" >> "$GITHUB_OUTPUT"
+            else
+              git tag "$1" "$GITHUB_SHA"
+              git push origin "refs/tags/$1"
+              echo "$2=true" >> "$GITHUB_OUTPUT"
+            fi
+          }
+
+          plan_tag "pypi/v${VERSION}" do_pypi
+          plan_tag "ansible-collection/v${VERSION}" do_collection
+
+      - name: Fail if any derived tag was a duplicate
+        if: steps.plan.outputs.do_pypi == 'false' || steps.plan.outputs.do_collection == 'false'
+        run: |
+          echo "::error::One or more derived release tags already existed, so that package was skipped. Failing this run to surface the duplicate — the other package (if any) still released."
+          exit 1
+
+  pypi:
+    needs: plan
+    if: ${{ !cancelled() && needs.plan.outputs.do_pypi == 'true' }}
+    uses: ./.github/workflows/release-pypi.yml
+    with:
+      version: ${{ needs.plan.outputs.version }}
+    secrets: inherit
+
+  collection:
+    needs: plan
+    if: ${{ !cancelled() && needs.plan.outputs.do_collection == 'true' }}
+    uses: ./.github/workflows/release-collection.yml
+    with:
+      version: ${{ needs.plan.outputs.version }}
+    secrets: inherit

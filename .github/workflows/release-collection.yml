@@ -1,16 +1,36 @@
-# This workflow builds and publishes the hsl0.josa Ansible Galaxy
-# collection when an "ansible-collection/vX.Y.Z" tag is pushed.
+# This workflow builds the hsl0.josa Ansible collection and attaches
+# the built artifact to a GitHub Release when an
+# "ansible-collection/vX.Y.Z" tag is pushed.
 #
 # The collection vendors the local jinja2_josa_filter source (and
 # tjosa) via python-vendorize, so this release does not depend on
 # jinja2-josa-filter having been published to PyPI first.
+#
+# NOTE: The collection is distributed via GitHub Releases, NOT the
+# public Ansible Galaxy index. Galaxy's importer rejects non-ASCII
+# plugin names, and this collection intentionally exposes Korean
+# filter names (은/는/가/를/...).
+#
+# Every stable tag also (re)publishes a set of rolling install
+# channels (ansible-collection/latest, /vX, /vX.Y) so the install
+# URL doesn't need to change on every release, e.g.:
+#   ansible-galaxy collection install --force \
+#     https://github.com/hsl0/jinja2-josa-filter/releases/download/ansible-collection/latest/hsl0-josa.tar.gz
+# Prerelease tags (e.g. vX.Y.Z-rc.1) only get a version-pinned
+# release and never touch the rolling channels.
 
-name: Release hsl0.josa collection to Ansible Galaxy
+name: Release hsl0.josa collection
 
 on:
   push:
     tags:
       - "ansible-collection/v*.*.*"
+  workflow_call:
+    inputs:
+      version:
+        description: "Version to release (e.g. 0.2.0), without the ansible-collection/v prefix"
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -32,6 +52,11 @@ jobs:
     permissions:
       contents: write
 
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -45,9 +70,21 @@ jobs:
           python -m pip install '.[dev]'
 
       - name: Set collection version from tag
+        id: version
         run: |
-          VERSION="${GITHUB_REF_NAME#ansible-collection/v}"
+          if [ -n "${{ inputs.version }}" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#ansible-collection/v}"
+          fi
           sed -i "s/^version:.*/version: ${VERSION}/" src/ansible_collections/hsl0/josa/galaxy.yml
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=ansible-collection/v${VERSION}" >> "$GITHUB_OUTPUT"
+          if [[ "${VERSION}" == *-* ]]; then
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Vendor collection dependencies
         run: python-vendorize
@@ -55,39 +92,132 @@ jobs:
       - name: Build collection
         run: ansible-galaxy collection build src/ansible_collections/hsl0/josa --output-path dist
 
+      - name: Normalize artifact to a fixed filename
+        run: cp dist/hsl0-josa-*.tar.gz dist/hsl0-josa.tar.gz
+
       - name: Upload collection to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.tar.gz
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: dist/hsl0-josa.tar.gz
           generate_release_notes: true
+          prerelease: ${{ steps.version.outputs.is_prerelease }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  galaxy-publish:
-    runs-on: ubuntu-latest
+  # Publishes/refreshes the rolling install channels (latest, vX,
+  # vX.Y) so the install URLs in the collection README never change
+  # between releases. Skipped for prerelease tags (e.g. vX.Y.Z-rc.1)
+  # so prereleases never become the "latest"/"vX"/"vX.Y" channel.
+  release-channels:
     needs:
       - release-build
 
-    environment:
-      name: galaxy
-      url: https://galaxy.ansible.com/ui/repo/published/hsl0/josa/
+    if: needs.release-build.outputs.is_prerelease != 'true'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.14"
-
-      - name: Install ansible-core
-        run: python -m pip install ansible-core
-
       - name: Download collection artifact
-        run: |
-          gh release download ${{ github.ref_name }} --pattern "*.tar.gz" --dir dist
+        run: gh release download ${{ needs.release-build.outputs.tag }} --pattern "hsl0-josa.tar.gz" --dir dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish collection to Ansible Galaxy
+      - name: Compute major/minor channel tags
+        id: channels
         run: |
-          ansible-galaxy collection publish dist/*.tar.gz --token "${{ secrets.GALAXY_TOKEN }}"
+          VERSION="${{ needs.release-build.outputs.version }}"
+          echo "major=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+          echo "minor=v${VERSION%.*}" >> "$GITHUB_OUTPUT"
+
+      # Each channel is deleted and recreated (rather than just
+      # re-uploading assets to the existing release) so that the
+      # underlying git tag also moves to point at the new commit.
+      # The GitHub Releases API ignores target_commitish when the
+      # tag already exists, so simply re-running action-gh-release
+      # against an existing tag would refresh the release asset but
+      # leave the tag itself pointing at whatever commit it was
+      # first created from.
+      - name: Delete stale "latest" channel release
+        run: gh release delete ansible-collection/latest --cleanup-tag --yes || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish "latest" channel
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ansible-collection/latest
+          name: "hsl0.josa (latest → v${{ needs.release-build.outputs.version }})"
+          body: "Rolling channel tracking the newest hsl0.josa build. Currently v${{ needs.release-build.outputs.version }}."
+          files: dist/hsl0-josa.tar.gz
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete stale major-version channel release
+        run: gh release delete "ansible-collection/${{ steps.channels.outputs.major }}" --cleanup-tag --yes || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish major-version channel
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "ansible-collection/${{ steps.channels.outputs.major }}"
+          name: "hsl0.josa (${{ steps.channels.outputs.major }} → v${{ needs.release-build.outputs.version }})"
+          body: "Rolling channel tracking the newest ${{ steps.channels.outputs.major }}.x build."
+          files: dist/hsl0-josa.tar.gz
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete stale minor-version channel release
+        run: gh release delete "ansible-collection/${{ steps.channels.outputs.minor }}" --cleanup-tag --yes || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish minor-version channel
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "ansible-collection/${{ steps.channels.outputs.minor }}"
+          name: "hsl0.josa (${{ steps.channels.outputs.minor }} → v${{ needs.release-build.outputs.version }})"
+          body: "Rolling channel tracking the newest ${{ steps.channels.outputs.minor }}.x build."
+          files: dist/hsl0-josa.tar.gz
+          make_latest: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Disabled: Galaxy's importer rejects the collection's non-ASCII
+  # (Korean) filter names during import validation, so publishing to
+  # the public Ansible Galaxy index is not possible. Kept for
+  # reference / in case Galaxy's validation changes in the future.
+  # galaxy-publish:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release-build
+  #
+  #   environment:
+  #     name: galaxy
+  #     url: https://galaxy.ansible.com/ui/repo/published/hsl0/josa/
+  #
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.14"
+  #
+  #     - name: Install ansible-core
+  #       run: python -m pip install ansible-core
+  #
+  #     - name: Download collection artifact
+  #       run: |
+  #         gh release download ${{ github.ref_name }} --pattern "*.tar.gz" --dir dist
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #
+  #     - name: Publish collection to Ansible Galaxy
+  #       run: |
+  #         ansible-galaxy collection publish dist/*.tar.gz --token "${{ secrets.GALAXY_TOKEN }}"
