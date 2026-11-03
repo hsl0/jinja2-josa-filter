@@ -1,7 +1,8 @@
 DOCUMENTATION:
-  name: 이
+  name: e
+  aliases: [이]
   author: hsl0
-  version_added: "0.1.0"
+  version_added: "0.2.0"
   short_description: 받침 있는 명사 뒤에만 이를 붙입니다
   description:
     - 받침이 있는 한국어 명사에는 이를 붙이고, 받침이 없는 명사는 그대로 반환합니다.

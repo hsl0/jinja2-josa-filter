@@ -1,7 +1,8 @@
 DOCUMENTATION:
-  name: 은는
+  name: eun_neun
+  aliases: [은는]
   author: hsl0
-  version_added: "0.1.0"
+  version_added: "0.2.0"
   short_description: 적절한 은 또는 는 조사를 붙입니다
   description:
     - 한국어 명사에 적절한 은 또는 는 조사를 붙입니다.

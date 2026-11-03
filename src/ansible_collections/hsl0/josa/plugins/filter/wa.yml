@@ -1,7 +1,8 @@
 DOCUMENTATION:
-  name: 과와
+  name: wa
+  aliases: [와]
   author: hsl0
-  version_added: "0.1.0"
+  version_added: "0.2.0"
   short_description: 적절한 과 또는 와 조사를 붙입니다
   description:
     - 한국어 명사에 적절한 과 또는 와 조사를 붙입니다.
@@ -14,7 +15,7 @@ DOCUMENTATION:
 EXAMPLES: |
   - name: 과 또는 와 조사 붙이기
     ansible.builtin.debug:
-      msg: "{{ '책' | hsl0.josa.과와 }}"
+      msg: "{{ '컴퓨터' | hsl0.josa.와 }}"
 RETURN:
   _value:
     description: 과 또는 와 조사가 붙은 입력 명사.
