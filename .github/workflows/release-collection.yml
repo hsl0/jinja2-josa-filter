@@ -92,14 +92,14 @@ jobs:
       - name: Build collection
         run: ansible-galaxy collection build src/ansible_collections/hsl0/josa --output-path dist
 
-      - name: Normalize artifact to a fixed filename
-        run: cp dist/hsl0-josa-*.tar.gz dist/hsl0-josa.tar.gz
+      # - name: Normalize artifact to a fixed filename
+      #   run: cp dist/hsl0-josa-*.tar.gz dist/hsl0-josa.tar.gz
 
       - name: Upload collection to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          files: dist/hsl0-josa.tar.gz
+          files: dist/hsl0-josa-*.tar.gz
           generate_release_notes: true
           prerelease: ${{ steps.version.outputs.is_prerelease }}
         env:
