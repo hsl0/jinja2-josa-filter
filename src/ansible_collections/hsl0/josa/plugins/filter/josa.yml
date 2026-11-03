@@ -19,11 +19,11 @@ DOCUMENTATION:
       type: str
       required: true
 EXAMPLES: |
-  - name: 후보로 지정한 주격 조사 붙이기
+  - name: 이 또는 가 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '집' | hsl0.josa.josa('가') }}"
 
-  - name: 선행 후보로 지정한 확장 조사 붙이기
+  - name: (이)랑 조사 붙이기
     ansible.builtin.debug:
       msg: "{{ '지민' | hsl0.josa.josa('이랑') }}"
 RETURN:
