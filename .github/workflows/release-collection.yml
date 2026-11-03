@@ -109,85 +109,87 @@ jobs:
   # vX.Y) so the install URLs in the collection README never change
   # between releases. Skipped for prerelease tags (e.g. vX.Y.Z-rc.1)
   # so prereleases never become the "latest"/"vX"/"vX.Y" channel.
-  release-channels:
-    needs:
-      - release-build
+  # release-channels:
+  #   needs:
+  #     - release-build
 
-    if: needs.release-build.outputs.is_prerelease != 'true'
+  #   if: needs.release-build.outputs.is_prerelease != 'true'
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+  #   permissions:
+  #     contents: write
 
-    steps:
-      - name: Download collection artifact
-        run: gh release download ${{ needs.release-build.outputs.tag }} --pattern "hsl0-josa.tar.gz" --dir dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Compute major/minor channel tags
-        id: channels
-        run: |
-          VERSION="${{ needs.release-build.outputs.version }}"
-          echo "major=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
-          echo "minor=v${VERSION%.*}" >> "$GITHUB_OUTPUT"
+  #     - name: Download collection artifact
+  #       run: gh release download ${{ needs.release-build.outputs.tag }} --pattern "hsl0-josa.tar.gz" --dir dist
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Each channel is deleted and recreated (rather than just
-      # re-uploading assets to the existing release) so that the
-      # underlying git tag also moves to point at the new commit.
-      # The GitHub Releases API ignores target_commitish when the
-      # tag already exists, so simply re-running action-gh-release
-      # against an existing tag would refresh the release asset but
-      # leave the tag itself pointing at whatever commit it was
-      # first created from.
-      - name: Delete stale "latest" channel release
-        run: gh release delete ansible-collection/latest --cleanup-tag --yes || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Compute major/minor channel tags
+  #       id: channels
+  #       run: |
+  #         VERSION="${{ needs.release-build.outputs.version }}"
+  #         echo "major=v${VERSION%%.*}" >> "$GITHUB_OUTPUT"
+  #         echo "minor=v${VERSION%.*}" >> "$GITHUB_OUTPUT"
 
-      - name: Publish "latest" channel
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ansible-collection/latest
-          name: "hsl0.josa (latest → v${{ needs.release-build.outputs.version }})"
-          body: "Rolling channel tracking the newest hsl0.josa build. Currently v${{ needs.release-build.outputs.version }}."
-          files: dist/hsl0-josa.tar.gz
-          make_latest: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     # Each channel is deleted and recreated (rather than just
+  #     # re-uploading assets to the existing release) so that the
+  #     # underlying git tag also moves to point at the new commit.
+  #     # The GitHub Releases API ignores target_commitish when the
+  #     # tag already exists, so simply re-running action-gh-release
+  #     # against an existing tag would refresh the release asset but
+  #     # leave the tag itself pointing at whatever commit it was
+  #     # first created from.
+  #     - name: Delete stale "latest" channel release
+  #       run: gh release delete ansible-collection/latest --cleanup-tag --yes || true
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete stale major-version channel release
-        run: gh release delete "ansible-collection/${{ steps.channels.outputs.major }}" --cleanup-tag --yes || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Publish "latest" channel
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: ansible-collection/latest
+  #         name: "hsl0.josa (latest → v${{ needs.release-build.outputs.version }})"
+  #         body: "Rolling channel tracking the newest hsl0.josa build. Currently v${{ needs.release-build.outputs.version }}."
+  #         files: dist/hsl0-josa.tar.gz
+  #         make_latest: false
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish major-version channel
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "ansible-collection/${{ steps.channels.outputs.major }}"
-          name: "hsl0.josa (${{ steps.channels.outputs.major }} → v${{ needs.release-build.outputs.version }})"
-          body: "Rolling channel tracking the newest ${{ steps.channels.outputs.major }}.x build."
-          files: dist/hsl0-josa.tar.gz
-          make_latest: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Delete stale major-version channel release
+  #       run: gh release delete "ansible-collection/${{ steps.channels.outputs.major }}" --cleanup-tag --yes || true
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete stale minor-version channel release
-        run: gh release delete "ansible-collection/${{ steps.channels.outputs.minor }}" --cleanup-tag --yes || true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Publish major-version channel
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: "ansible-collection/${{ steps.channels.outputs.major }}"
+  #         name: "hsl0.josa (${{ steps.channels.outputs.major }} → v${{ needs.release-build.outputs.version }})"
+  #         body: "Rolling channel tracking the newest ${{ steps.channels.outputs.major }}.x build."
+  #         files: dist/hsl0-josa.tar.gz
+  #         make_latest: false
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish minor-version channel
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "ansible-collection/${{ steps.channels.outputs.minor }}"
-          name: "hsl0.josa (${{ steps.channels.outputs.minor }} → v${{ needs.release-build.outputs.version }})"
-          body: "Rolling channel tracking the newest ${{ steps.channels.outputs.minor }}.x build."
-          files: dist/hsl0-josa.tar.gz
-          make_latest: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Delete stale minor-version channel release
+  #       run: gh release delete "ansible-collection/${{ steps.channels.outputs.minor }}" --cleanup-tag --yes || true
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Publish minor-version channel
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         tag_name: "ansible-collection/${{ steps.channels.outputs.minor }}"
+  #         name: "hsl0.josa (${{ steps.channels.outputs.minor }} → v${{ needs.release-build.outputs.version }})"
+  #         body: "Rolling channel tracking the newest ${{ steps.channels.outputs.minor }}.x build."
+  #         files: dist/hsl0-josa.tar.gz
+  #         make_latest: false
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   galaxy-publish:
     runs-on: ubuntu-latest
@@ -210,7 +212,7 @@ jobs:
   
       - name: Download collection artifact
         run: |
-          gh release download ${{ github.ref_name }} --pattern "*.tar.gz" --dir dist
+          gh release download ansible-collection/${{ github.ref_name }} --pattern "*.tar.gz" --dir dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
