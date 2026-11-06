@@ -1,5 +1,6 @@
 """plugins/filter/*.yml 문서와 템플릿을 합쳐 필터 플러그인 .py를 만듭니다."""
 
+import ast
 import json
 import re
 import sys
@@ -7,10 +8,9 @@ from pathlib import Path
 
 import yaml
 
-FILTER_DIR = (
-    Path(__file__).resolve().parents[1]
-    / "src/ansible_collections/hsl0/josa/plugins/filter"
-)
+ROOT = Path(__file__).resolve().parents[1]
+FILTER_DIR = ROOT / "src/ansible_collections/hsl0/josa/plugins/filter"
+SOURCE = ROOT / "src/jinja2_josa_filter/__init__.py"
 # name과 aliases는 모듈 로드 때 한 번 딕셔너리로 만들어 두고 filters()는 그대로 반환
 TEMPLATE = r'''# 자동 생성된 파일입니다. 직접 수정하지 마세요. (tools/generate_filter_plugins.py)
 DOCUMENTATION = r"""
@@ -23,7 +23,7 @@ RETURN = r"""
 @RETURN@"""
 
 from ansible_collections.hsl0.josa.plugins.plugin_utils.vendor.jinja2_josa_filter import (
-    JINJA_FILTERS,
+    @FUNCTION@,
 )
 
 _FILTERS = {
@@ -65,13 +65,30 @@ def literal(name, value):
     return value
 
 
-def render(data, names):
+def load_function_map():
+    """src/jinja2_josa_filter의 JINJA_FILTERS에서 필터 이름 -> 함수 이름을 읽습니다."""
+    tree = ast.parse(SOURCE.read_text(encoding="utf-8"))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and node.targets[0].id == "JINJA_FILTERS":
+            return {k.value: v.id for k, v in zip(node.value.keys, node.value.values)}
+    raise SystemExit(f"{SOURCE}: JINJA_FILTERS를 찾지 못했습니다")
+
+
+def function_for(path, names, function_map):
+    unknown = [n for n in names if n not in function_map]
+    if unknown:
+        raise SystemExit(f"{path.name}: JINJA_FILTERS에 없는 이름 {unknown}")
+    functions = {function_map[n] for n in names}
+    if len(functions) != 1:
+        raise SystemExit(f"{path.name}: 이름들이 서로 다른 함수를 가리킵니다 {functions}")
+    return functions.pop()
+
+
+def render(data, names, function):
     filters = "".join(
-        f"    {json.dumps(n, ensure_ascii=False)}: "
-        f"JINJA_FILTERS[{json.dumps(n, ensure_ascii=False)}],\n"
-        for n in names
+        f"    {json.dumps(n, ensure_ascii=False)}: {function},\n" for n in names
     )
-    text = TEMPLATE.replace("@FILTERS@", filters)
+    text = TEMPLATE.replace("@FILTERS@", filters).replace("@FUNCTION@", function)
     for key in SECTIONS:
         text = text.replace(f"@{key}@", literal(key, data[key]))
     return text
@@ -86,6 +103,7 @@ def remove_stale(keep):
 
 
 def main():
+    function_map = load_function_map()
     owners = {}
     docs = {}
     for yml in sorted(FILTER_DIR.glob("*.yml")):
@@ -102,8 +120,10 @@ def main():
         out = yml.with_suffix(".py")
         if not GALAXY_NAME.match(out.stem):
             raise SystemExit(f"{out.name}: Galaxy가 받는 파일명이 아닙니다")
+        names = filter_names(yml, data)
+        function = function_for(yml, names, function_map)
         out.write_text(
-            render(data, filter_names(yml, data)), encoding="utf-8", newline="\n"
+            render(data, names, function), encoding="utf-8", newline="\n"
         )
         generated.add(out.name)
 
