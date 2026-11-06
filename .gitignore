@@ -8,6 +8,9 @@ src/ansible_collections/*/*/tests/output/
 # vendor
 src/ansible_collections/hsl0/josa/plugins/plugin_utils/vendor
 
+# filter plugins generated from the .yml docs (tools/generate_filter_plugins.py)
+src/ansible_collections/hsl0/josa/plugins/filter/*.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

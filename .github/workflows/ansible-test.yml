@@ -5,12 +5,14 @@ on:
     paths:
       - "src/ansible_collections/hsl0/josa/**"
       - "src/jinja2_josa_filter/**"
+      - "tools/**"
       - "pyproject.toml"
       - ".github/workflows/ansible-test.yml"
   pull_request:
     paths:
       - "src/ansible_collections/hsl0/josa/**"
       - "src/jinja2_josa_filter/**"
+      - "tools/**"
       - "pyproject.toml"
       - ".github/workflows/ansible-test.yml"
   workflow_call:
@@ -34,6 +36,8 @@ jobs:
           python -m pip install '.[dev]'
       - name: Vendor collection dependencies
         run: python-vendorize
+      - name: Generate filter plugins
+        run: python tools/generate_filter_plugins.py
       - name: Run collection sanity tests
         working-directory: src/ansible_collections/hsl0/josa
         run: ansible-test sanity --color yes
@@ -53,6 +57,8 @@ jobs:
           python -m pip install '.[dev]'
       - name: Vendor collection dependencies
         run: python-vendorize
+      - name: Generate filter plugins
+        run: python tools/generate_filter_plugins.py
       - name: Run collection integration tests
         working-directory: src/ansible_collections/hsl0/josa
         run: ansible-test integration --color yes

@@ -48,7 +48,7 @@ Ansible에서 컬렉션 필터는 기본적으로 FQCN(Fully Qualified Collectio
 `는`, `은`과 같이 `hsl0.josa.` 접두어를 생략한 짧은 이름으로 필터를 쓰고 싶다면 플레이북과 같은 디렉터리에 `filter_plugins/josa.py`를 만들고 컬렉션의 `FilterModule`을 재노출하는 파일을 만드세요.
 
 ```python
-from ansible_collections.hsl0.josa.plugins.filter.josa import FilterModule
+from ansible_collections.hsl0.josa.plugins.plugin_utils.all_filters import FilterModule
 ```
 
 Ansible은 플레이북 옆의 `filter_plugins/`를 자동으로 인식하므로, 별도 설정 없이 `{{ food | 는 }}`처럼 짧은 이름을 바로 쓸 수 있습니다.

@@ -2,6 +2,7 @@ from ansible_collections.hsl0.josa.plugins.plugin_utils.vendor.jinja2_josa_filte
     JINJA_FILTERS,
 )
 
+
 class FilterModule:
     @staticmethod
     def filters():

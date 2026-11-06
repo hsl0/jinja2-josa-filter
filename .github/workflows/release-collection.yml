@@ -89,6 +89,9 @@ jobs:
       - name: Vendor collection dependencies
         run: python-vendorize
 
+      - name: Generate filter plugins
+        run: python tools/generate_filter_plugins.py
+
       - name: Build collection
         run: ansible-galaxy collection build src/ansible_collections/hsl0/josa --output-path dist
 

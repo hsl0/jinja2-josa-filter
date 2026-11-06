@@ -23,3 +23,5 @@ issues: https://github.com/hsl0/jinja2-josa-filter/issues
 build_ignore:
   - tests
   - tests/**
+  # 문서는 생성된 .py의 DOCUMENTATION에 들어 있으므로 사이드카 .yml은 배포하지 않는다.
+  - plugins/filter/*.yml

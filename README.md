@@ -70,6 +70,14 @@ pip install '.[dev]'
 python-vendorize
 ```
 
+### 필터 생성
+
+한글 필터 이름은 `plugins/filter/*.yml`의 `aliases`로 정의합니다. Ansible이 별칭으로도 문서를 찾으려면 플러그인 `.py` 안에 `DOCUMENTATION`이 있어야 하므로, `.yml`과 `josa.py`(템플릿)를 합쳐 `.py`를 생성합니다.
+
+```sh
+python tools/generate_filter_plugins.py
+```
+
 ### 린트
 
 `jinja2-josa-filter` 패키지는 flake8과 pylint를 사용합니다.
