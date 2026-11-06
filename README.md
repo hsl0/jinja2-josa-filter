@@ -5,7 +5,7 @@ Jinja2 호환 템플릿 환경에서 사용할 수 있는 한국어 조사 필�
 ## 패키지 목록
 
 - **[jinja2-josa-filter](src/jinja2_josa_filter/README.md)** (PyPI): Jinja2를 사용하는 모든 환경에서 쓸 수 있는 중립적인 Python 패키지입니다.
-- **[hsl0.josa](src/ansible_collections/hsl0/josa/README.md)** (Ansible 컬렉션): 위 패키지를 Ansible 컬렉션으로 다시 배포한 어댑터입니다. 공개 Ansible Galaxy 인덱스에는 게시하지 않고, GitHub Release에서만 배포합니다. 설치 후 별도 등록 없이 바로 사용할 수 있습니다.
+- **[hsl0.josa](src/ansible_collections/hsl0/josa/README.md)** (Ansible 컬렉션): 위 패키지를 Ansible 컬렉션으로 다시 배포한 어댑터입니다. 설치 후 별도 등록 없이 바로 사용할 수 있습니다.
 
 ## 사용법
 
