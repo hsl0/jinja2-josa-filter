@@ -53,6 +53,8 @@ from ansible_collections.hsl0.josa.plugins.plugin_utils.all_filters import Filte
 
 Ansible은 플레이북 옆의 `filter_plugins/`를 자동으로 인식하므로, 별도 설정 없이 `{{ food | 는 }}`처럼 짧은 이름을 바로 쓸 수 있습니다.
 
+단, 충돌 방지를 위해 `josa`와 한글 필터만 FQCN을 생략하고 사용할 수 있습니다.
+
 ## 필터
 
 - `은는`, `은`, `는`, `eun_neun`, `eun`, `neun`
