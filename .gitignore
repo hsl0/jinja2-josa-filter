@@ -6,7 +6,7 @@ src/ansible_collections/*/*/tests/integration/inventory
 src/ansible_collections/*/*/tests/output/
 
 # vendor
-src/ansible_collections/hsl0/josa/plugins/module_utils/vendor
+src/ansible_collections/hsl0/josa/plugins/plugin_utils/vendor
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
